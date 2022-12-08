@@ -1,0 +1,357 @@
+//1. Reverse an array/string
+for(i=0,j=n-1;i<j;i++,j--)
+{
+  swap(arr[i],arr[j]);
+}
+
+//2. move zeroes at the end.
+void pushZerosToEnd(int arr[], int n) {
+	    int k = 0 ;
+	    for(int i=0;i<n;i++)
+	    {
+	        if(arr[i]!=0)
+	        {
+	            arr[k++]=arr[i];
+	        }
+	    }
+	    for(int i=k;i<n;i++)
+	    {
+	        arr[i]=0;
+	    }
+	}
+
+//3. sort 0,1,2 and don't use any sorting algorithm. O(N) inplace.
+void sort012(int a[], int n)
+    {
+        int c0 = 0;
+        int c1 = 0;
+        int c2 = 0;
+        
+        for(int i=0;i<n;i++)
+        {
+            if(a[i]==0) c0++;
+            if(a[i]==1) c1++;
+            if(a[i]==2) c2++;
+        }
+        
+        for(int i=0;i<c0;i++)
+        {
+            a[i]=0;
+        }
+        for(int i=c0;i<c0+c1;i++)
+        {
+            a[i]=1;
+        }
+        for(int i=c0+c1;i<n;i++)
+        {
+            a[i]=2;
+        }
+    } // 2 pass problem
+
+In 1 pass => Use Dutch National Flag Algorithm
+void sort012(int a[], int n)
+    {
+        int low = 0;
+        int mid = 0;
+        int high = n-1;
+        
+        while(mid<=high)
+        {
+            if(a[mid]==0){
+               swap(a[low],a[mid]);
+               low++;
+               mid++;
+            } 
+            else if(a[mid]==1) mid++;
+            else{
+                swap(a[mid],a[high]);
+                high--;
+            }
+        }
+    }
+
+//4. move negative to the start of an array and move positive to the end of an array. => Quicksort Approach.
+int *a = new int[n];
+        int j = 0;
+        for(int i=0;i<n;i++)
+        {
+            if(arr[i]>=0)
+            {
+                a[j++]=arr[i];
+            }
+        }
+        for(int i=0;i<n;i++)
+        {
+            if(arr[i]<0)
+            {
+                a[j++]=arr[i];
+            }
+        }
+        for(int i=0;i<n;i++)
+        {
+            arr[i]=a[i];
+        }
+
+//5. Kth smallest element => Best Approach using min_heap or max_heap
+smallest, so use max_heap DS.
+priority_queue <int , vector<int> > pq; // max_heap
+        
+        int i = l;
+        while(i<=r)
+        {
+            pq.push(arr[i]);
+            i++;
+            
+            if(pq.size()>k) pq.pop();
+        }
+        
+        return pq.top();
+    }
+
+for kth largest element => use min_heap DS
+int findKthLargest(vector<int>& nums, int k) {
+        priority_queue < int, vector<int> , greater <int> > pq;  // min_heap
+        for(int i=0;i<nums.size();i++)
+        {
+            pq.push(nums[i]);
+
+            if(pq.size() > k)
+                pq.pop();
+        }
+        return pq.top();
+    }
+
+for kLargest Element. ==> if largest then use max_heap in this case.
+vector<int> kLargest(int arr[], int n, int k) {
+	    priority_queue <int,vector<int>> pq;
+	    vector<int> v;
+	    
+	    for(int i=0;i<n;i++)
+	    {
+	        pq.push(arr[i]);
+	    }
+	    
+	    for(int i=0;i<k;i++)
+	    {
+	        v.push_back(pq.top());
+	        pq.pop();
+	    }
+	    return v;
+	}
+
+//6. Union of Two Arrays
+//Function to return the count of number of elements in union of two arrays.
+    int doUnion(int a[], int n, int b[], int m)  {
+        
+        set<int> s;
+        for(int i=0;i<n;i++)
+        {
+            s.insert(a[i]);
+        }
+        for(int i=0;i<m;i++)
+        {
+            s.insert(b[i]);
+        }
+        return s.size();
+    }
+
+//7. Cummulative Sum Array => Prefix Sum
+#include <iostream>
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+	int *a = new int[n];
+	for(int i=0;i<n;i++)
+	{
+		cin >> a[i];
+	}
+	int q;
+	cin >> q;
+	int *pre = new int[n];
+	for(int i=0;i<n;i++)
+	{
+		if(i==0)
+		   pre[i]=a[i];
+		else
+		   pre[i]=pre[i-1]+a[i];
+	}
+	while(q--)
+	{
+		int a,b;
+		cin >> a >> b;
+		int sum = pre[b];
+		
+		if(a==0)
+		   cout << sum << endl;
+		else
+		   cout << sum - pre[a-1] << endl;
+		
+	}
+	return 0;
+}
+
+//8. Largest Sum SubArray
+Method 1:-> Using 3 For Loops => O(n^3)
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int n;
+    cin >> n;
+    int *arr = new int[n];
+    for (int i = 0; i < n; i++)
+    {
+        cin >> arr[i];
+    }
+    int maxSum = INT_MIN;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i; j < n; j++)
+        {
+            int sum = 0;
+            for (int k = i; k <= j; k++)
+            {
+                sum += arr[k];
+                if (sum > maxSum)
+                    maxSum = sum;
+            }
+        }
+    }
+    cout << maxSum << endl;
+    return 0;
+}
+Method 2:-> Using Kadane's Algorithm
+    int maxSum = 0;
+    int currSum = 0;
+    for(int i=0;i<n;i++)
+    {
+        currSum += arr[i];
+        if(currSum > maxSum)
+            maxSum = currSum;
+        if(currSum < 0)
+            currSum = 0;
+    }
+    cout << maxSum << endl;
+
+//9. connect N ropes with minimum cost
+long long minCost(long long arr[], long long n) {
+        priority_queue <long long int,vector<long long int>,greater<long long int>> pq;
+        for(int i=0;i<n;i++)
+        {
+            pq.push(arr[i]);
+        }
+        long long int ans = 0;
+        while(pq.size()>1)
+        {
+            long long int first = pq.top();
+            pq.pop();
+            long long int second = pq.top();
+            pq.pop();
+            long long int sum = first + second;
+            ans+=sum;
+            pq.push(sum);
+        }
+        return ans;
+    }
+
+//10. Wave array
+for(int i=0;i<n-1;i+=2)
+{
+     swap(arr[i],arr[i+1]);
+}
+
+//11. First Missing Positive
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+       
+        int n=nums.size();
+        
+        for(int i=0;i<n;i++)
+        {
+            long long int ele=nums[i];
+            long long int chair=ele-1;
+            
+            if(ele>=1 && ele<=n)
+            {
+                if(nums[chair]!=ele)
+                {
+                    swap(nums[chair],nums[i]);
+                    i--;
+                }
+            }
+        }
+        for(int i=0;i<n;i++)
+        {
+            if(nums[i]!=(i+1))
+            {
+                return i+1;
+            }
+        }
+        return n+1;
+    }   
+};
+
+//12. Contains Duplicate
+bool containsDuplicate(vector<int>& nums) {
+        sort(nums.begin(),nums.end());
+        for(int i=0;i<nums.size()-1;i++)
+        {
+            if(nums[i]==nums[i+1])
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+//13. Merge Sorted Array
+void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+       int i=0,j=0,k=0;
+       vector<int> v(m+n);
+
+       while(i<m && j<n)
+       {
+           if(nums1[i]<nums2[j])
+           {
+               v[k++]=nums1[i++];
+           }
+           else
+           {
+               v[k++]=nums2[j++];
+           }
+       } 
+       for(;i<m;i++)
+       {
+           v[k++]=nums1[i];
+       }
+       for(;j<n;j++)
+       {
+           v[k++]=nums2[j];
+       }
+       
+       nums1 = v;
+    }
+
+//14. Chocolate Distribution Problem (Sliding Window)
+long long findMinDiff(vector<long long> a, long long n, long long m){
+           
+         long long int minDiff = LONG_MAX;
+         long long int diff;
+         
+         sort(a.begin(),a.end());
+         
+         for(int i=0; m+i-1 < n; i++ )
+         {
+             diff = a[m+i-1] - a[i];
+             if(diff < minDiff)
+                 minDiff = diff;
+         }
+         
+         return minDiff;
+    }  
+
+//15. Next Permutation
+ 
